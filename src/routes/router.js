@@ -1,3 +1,4 @@
+import express from 'express';
 import { Router } from 'express';
 
 const router = Router();
@@ -14,12 +15,23 @@ router.get('/', (req, res) => {
     res.status(200).send({ error: null, data: products });
 });
 
+router.get('/:pid', (req, res) => {
+    const pid = parseInt(req.params.pid);
+    const limit = parseInt(req.query.limit);
+    const index = products.findIndex(element => element.id === pid);
+    if (index > -1) {
+        res.status(200).send({ error: null, data: products[index] });
+    } else {
+        res.status(404).send({ error: 'No se encuentra el producto', data: [] });
+    }
+});
+
 router.post('/', (req, res) => {
     const { title, description, code, price, status, stock, category, thumbnails } = req.body;
 
-    if (title == '' && description == '' && code == '' && price == '' && status == '' && stock == '' && category == '' && thumbnails == '') {
+    if (title == '' && description == '' && code == '' && price == ''  && stock == '' && category == '' && thumbnails == '') {
         const maxId = Math.max(...productos.map(element => +element.id));
-        const newProduct = { id: maxId + 1, title: title, description: description, code: code, price: price, status: status, stock: stock, category: category, thumbnails: thumbnails };
+        const newProduct = { id: maxId + 1, title: title, description: description, code: code, price: price, stock: stock, category: category, thumbnails: thumbnails };
         users.push(newProduct);
         res.status(200).send({ error: null, data: newProduct, file: req.file });
     } else {
